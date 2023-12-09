@@ -101,10 +101,41 @@ T1:     addi $sp, $sp, -4 # 領域確保
 TERMEND:
         jr $ra
 
-##### 関数 EXP: 式の処理 #####
-EXP:    # ここからEXPのコードを書くこと
+##### 関数 EXP: 式の処理 ##### # TODO: ここからEXPのコードを書くこと
+EXP:    addi $sp, $sp, -4 # 領域確保
+        sw $ra, 0($sp) # 戻り番地をpush
+        jal TERM # 左の項
+        lw $ra, 0($sp) # 戻り番地をpopして戻す
+        addi $sp, $sp, 4 # $spを戻す
 
+E0:     li $t9, 0x2B # "+" のアスキーコード
+        beq $t1, $t9, E1 # "+"ならE1に分岐
+        li $t9, 0x2D # "-"のアスキーコード
+        bne $t1, $t9, EXPEND # "-"でないならEXPENDに分岐
 
+E1:     addi $sp, $sp, -4 # 領域確保
+        sw $t1, 0($sp) # 演算子の文字コードをスタックにpush
+        addi $sp, $sp, -4 # 領域確保
+        sw $ra, 0($sp) # 戻り番地をpush
+        jal GETC
+        lw $ra, 0($sp) # 戻り番地をpopして戻す
+        addi $sp, $sp, 4 # $spを戻す
+        addi $sp, $sp, -4 # 領域確保
+        sw $ra, 0($sp) # 戻り番地をpush
+        jal TERM # 右の項
+        lw $ra, 0($sp) # 戻り番地をpopして戻す
+        addi $sp, $sp, 4 # $spを戻す
+        lw $t0, 0($sp) # 演算子の文字コードをpopし$t0に格納
+        addi $sp, $sp, 4 # $spを戻す
+        addi $sp, $sp, -4 # 領域確保
+        sw $ra, 0($sp) # 戻り番地をpush
+        jal STORE
+        lw $ra, 0($sp) # 戻り番地をpopして戻す
+        addi $sp, $sp, 4 # $spを戻す
+        j E0
+
+EXPEND:
+        jr $ra
 
 ##### 関数 FACTOR: 因子の処理 #####
 FACTOR:
