@@ -146,4 +146,4 @@ STORE:  sb $t0, B($t2) # 配列Bに1文字格納
         .data
 A:      .space 30 # 入力した文字列を格納
 B:      .space 30 # 出力する文字列を格納
-ERMSG:  .asciiz "*ERROR*¥n" # エラーメッセージ
+ERMSG:  .asciiz "*ERROR*\n" # エラーメッセージ
