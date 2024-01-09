@@ -8,10 +8,10 @@ INLOOP:
         li $v0, 4
         la $a0, KMSG
         syscall
-        li ##
+        li $v0, 5 ##
         syscall
         move $s6, $v0
-        beq $s6, ##
+        beq $s6, $zero, ENDPRC ##
         la $a0, first
         move $a1, $s6
         jal BST
@@ -34,16 +34,16 @@ BST:
         beq $s1, $zero, ADDND
 
 LOOP:
-        ##
+        lw $t1, 0($s1) ##
         move $t2, $a1
         beq $t1, $t2, FOUND
-        blt ##
+        blt $t1, $t2, RIGHT ##
         addi $t3, $s1, 8
-        ##
+        lw $t4, 8($s1) ##
         j NEXT
 
 RIGHT:
-        ##
+        addi $t3, $s1, 12 ##
         lw $t4, 0($t3)
 
 NEXT:
@@ -52,8 +52,8 @@ NEXT:
         j LOOP
 
 ADDND:
-        li $v0, ##
-        ##
+        li $v0, 9 ##
+        li $a0, 16 ##
         syscall
         move $s2, $v0
         sw $s2, 0($t3)
@@ -64,7 +64,7 @@ ADDND:
         li $v0, 5
         syscall
         move $s7, $v0
-        ##
+        sw $s7, 4($s2) ##
         sw $zero, 8($s2)
         sw $zero, 12($s2)
         jr $ra
@@ -80,7 +80,7 @@ FOUND:
         la $a0, SPACE
         syscall
         li $v0, 1
-        lw $a0, ##
+        lw $a0, 4($s1) ##
         syscall
         li $v0, 4
         la $a0, NEWL
